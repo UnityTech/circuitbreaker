@@ -102,8 +102,8 @@ func (c *HTTPClient) Do(req *http.Request) (*http.Response, error) {
 	return resp, err
 }
 
-// DoWithCancel wraps http.Client DoWithCancel()
-func (c *HTTPClient) DoWithCancel(ctx context.Context, req *http.Request) (*http.Response, error) {
+// DoWithContext wraps http.Client DoWithCancel()
+func (c *HTTPClient) DoWithContext(ctx context.Context, req *http.Request) (*http.Response, error) {
 	var resp *http.Response
 	var err error
 	breaker := c.breakerLookup(req.URL.String())
