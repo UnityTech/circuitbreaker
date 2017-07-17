@@ -1,6 +1,7 @@
 package circuit
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"net/url"
@@ -96,6 +97,18 @@ func (c *HTTPClient) Do(req *http.Request) (*http.Response, error) {
 	breaker := c.breakerLookup(req.URL.String())
 	err = breaker.Call(func() error {
 		resp, err = c.Client.Do(req)
+		return err
+	}, c.timeout)
+	return resp, err
+}
+
+// DoWithCancel wraps http.Client DoWithCancel()
+func (c *HTTPClient) DoWithCancel(ctx context.Context, req *http.Request) (*http.Response, error) {
+	var resp *http.Response
+	var err error
+	breaker := c.breakerLookup(req.URL.String())
+	err = breaker.Call(func() error {
+		resp, err = c.Client.Do(req.WithContext(ctx))
 		return err
 	}, c.timeout)
 	return resp, err
